@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Date: 20121126
+# Description: This script generates screencasts with audio; in webM format.
+# Requirements: ffmpeg
+# Author: Renich Bon Ciric <renich@woralelandia.com>
+# License: GPLv3
+
+# vars
+date=$( date +%Y%m%d-%H%M%S )
+path=~/Videos/screencasts
+name=${1:-screencast}
+framerate=10
+format='webm'
+resolution='hd1080'
+
+# check if ffmpeg is present
+if [[ ! $( which ffmpeg ) ]]; then
+    echo "You don't have ffmpeg installed. Please install it first."
+    exit 1
+fi
+
+# check if dir exists
+if [[ ! -d ${path}  ]]; then
+    mkdir -p -m 770 ${path};
+fi
+
+# do
+echo "Recording screencast in ${path}/${date}-${name}.${format}; in ${resolution} @ ${framerate} FPS..."
+echo "Please, press 'Ctrl + c' when done."
+ffmpeg -f pulse -i default -f x11grab -r ${framerate} -s hd1080 -i $DISPLAY ~/Videos/screencasts/${date}-${name}.${format} &> /dev/null
+#ffmpeg -f openal -i 'USB Audio CODEC  Analog Stereo' -f x11grab -r ${framerate} -s hd1080 -i $DISPLAY ~/Videos/screencasts/${date}-${name}.${format} &> /dev/null
