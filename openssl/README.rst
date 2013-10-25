@@ -28,6 +28,12 @@ Aquí hay una colección de comandos para hacer taréas comúnes con openssl; ta
     cd /etc/pki/tls/private/
     mv nueva.key midominio.tld.key
 
+## Convertir un archivo DER (.crt .cer .der) a PEM
+    openssl x509 -inform der -in certificado.crt -out certificado.pem
+
+## Convertir un archivo PEM a DER
+    openssl x509 -outform der -in certificado.pem -out certificado.crt
+
 Referencias
 ----------
 * http://www.sslshopper.com/article-most-common-openssl-commands.html
