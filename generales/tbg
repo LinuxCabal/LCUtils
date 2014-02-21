@@ -5,7 +5,10 @@
 # Alternates between white and black
 # background colors
 
-terminalrc=~/.config/Terminal/terminalrc
+terminalrc=~/.config/xfce4/terminal/terminalrc
+if [ ! -e $terminalrc ]; then
+    terminalrc=~/.config/Terminal/terminalrc
+fi
 light_color=ffffffffffff
 dark_color=000000000000
 
