@@ -12,6 +12,14 @@ fi
 light_color=ffffffffffff
 dark_color=000000000000
 
+if ! grep "ColorBackground=" $terminalrc >/dev/null; then
+    echo "ColorBackground=#${dark_color}" >> $terminalrc
+fi
+
+if ! grep "ColorForeground=" $terminalrc >/dev/null; then
+    echo "ColorForeground=#${light_color}" >> $terminalrc
+fi
+
 if grep "ColorBackground=#${light_color}" $terminalrc >/dev/null; then
     sed -i -e "s/\(ColorBackground=#\)${light_color}/\1${dark_color}/" \
            -e "s/\(ColorForeground=#\)${dark_color}/\1${light_color}/" $terminalrc
