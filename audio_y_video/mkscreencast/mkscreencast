@@ -15,7 +15,7 @@ resolution='hd1080'
 
 # check if ffmpeg is present
 if [[ ! $( which ffmpeg ) ]]; then
-    echo "You don't have ffmpeg installed. Please install it first."
+    echo "No tienes ffmpeg instalado. Instálalo primero por favor."
     exit 1
 fi
 
@@ -25,7 +25,7 @@ if [[ ! -d ${path}  ]]; then
 fi
 
 # do
-echo "Recording screencast in ${path}/${date}-${name}.${format}; in ${resolution} @ ${framerate} FPS..."
-echo "Please, press 'Ctrl + c' when done."
+echo "Grabando screencast en ${path}/${date}-${name}.${format}; a ${resolution} @ ${framerate} FPS..."
+echo "Presiona 'q <enter>' para acabar."
 ffmpeg -f pulse -i default -f x11grab -r ${framerate} -s hd1080 -i $DISPLAY ~/Videos/screencasts/${date}-${name}.${format} &> /dev/null
 #ffmpeg -f openal -i 'USB Audio CODEC  Analog Stereo' -f x11grab -r ${framerate} -s hd1080 -i $DISPLAY ~/Videos/screencasts/${date}-${name}.${format} &> /dev/null
