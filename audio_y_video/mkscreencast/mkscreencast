@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Date: 20121126
+# Date: 20140917
 # Description: This script generates screencasts with audio; in webM format.
 # Requirements: ffmpeg
 # Author: Renich Bon Ciric <renich@woralelandia.com>
