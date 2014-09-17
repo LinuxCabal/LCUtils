@@ -6,26 +6,64 @@
 # License: GPLv3
 
 # vars
+cpu_no=$(( 1 + $( lscpu -p | tail -n 1 | cut -d ',' -f 1 ) ))
 date=$( date +%Y%m%d-%H%M%S )
-path=~/Videos/screencasts
-name=${1:-screencast}
-framerate=10
 format='webm'
+framerate=10
+log_level='quiet'
+name=${1:-screencast}
+path=~/Videos/screencasts
 resolution='hd1080'
 
-# check if ffmpeg is present
-if [[ ! $( which ffmpeg ) ]]; then
-    echo "No tienes ffmpeg instalado. Instálalo primero por favor."
-    exit 1
-fi
 
-# check if dir exists
-if [[ ! -d ${path}  ]]; then
-    mkdir -p -m 770 ${path};
-fi
+# functions
+bootstrap() {
+    # check if ffmpeg is present
+    if [[ ! $( which ffmpeg ) ]]; then
+        echo "You don't have ffmpeg installed. Please install it first."
+        exit 1
+    fi
+
+    # check if dir exists
+    if [[ ! -d ${path}  ]]; then
+        mkdir -p -m 640 ${path};
+    fi
+}
+
+clean_up() {
+    echo
+    echo "ending process with PID ${video_pid}"
+    kill ${video_pid}
+}
+
+control_c() {
+    clean_up
+    exit $?
+}
+
+start_minicam() {
+    ffplay -threads ${cpu_no} -loglevel quiet -f v4l2 -framerate ${framerate} -i /dev/video0 -video_size 320x240 &
+    video_pid=${!}
+}
+
+record_screen() {
+    bootstrap
+
+    echo "Recording screencast in ${path}/${date}-${name}.${format}; in ${resolution} @ ${framerate} FPS..."
+    echo "Please, press 'q, <enter>' when done."
+
+    ffmpeg -loglevel ${log_level} -threads ${cpu_no} -f pulse -i default -f x11grab -framerate ${framerate} -s hd1080 -i $DISPLAY ~/Videos/screencasts/${date}-${name}.${format}
+
+    clean_up
+}
+
 
 # do
-echo "Grabando screencast en ${path}/${date}-${name}.${format}; a ${resolution} @ ${framerate} FPS..."
-echo "Presiona 'q <enter>' para acabar."
-ffmpeg -f pulse -i default -f x11grab -r ${framerate} -s hd1080 -i $DISPLAY ~/Videos/screencasts/${date}-${name}.${format} &> /dev/null
-#ffmpeg -f openal -i 'USB Audio CODEC  Analog Stereo' -f x11grab -r ${framerate} -s hd1080 -i $DISPLAY ~/Videos/screencasts/${date}-${name}.${format} &> /dev/null
+start_minicam
+record_screen
+
+
+# trap ctrl+c if it happens
+trap control_c SIGINT 
+
+exit 0
