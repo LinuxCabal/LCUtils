@@ -45,8 +45,8 @@ source $project_name/$venv/bin/activate
 echo create a git repository
 cd $project_name
 git init
-git config --global user.email juan.perez@ejemplo.com
-git config --global user.name 'Juan Pérez'
+git config user.email juan.perez@ejemplo.com
+git config user.name 'Juan Pérez'
 echo "venv*" >> .gitignore
 echo "*.pyc" >> .gitignore
 git add .gitignore
