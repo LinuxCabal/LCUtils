@@ -1,0 +1,53 @@
+#! /bin/bash
+
+project_name=project
+venv=venv
+pyver=3.3
+
+if [ ! -e $project_name ]; then
+    echo create folder $project_name
+    mkdir $project_name
+fi
+
+if [ ! -e $project_name/$venv ]; then
+    echo create virtual environment $venv
+    virtualenv -p python$pyver $project_name/$venv
+    echo simulate option --copy-all required for pygame install
+    rm -vf $project_name/$venv/include/python${pyver}m
+    mkdir -v $project_name/$venv/include/python${pyver}m
+    cp -r /usr/include/python${pyver}m/* $project_name/$venv/include/python${pyver}m
+fi
+
+if ! $project_name/$venv/bin/python -c 'import cython' 2>/dev/null >/dev/null; then
+    echo install Cython
+    $project_name/$venv/bin/pip install cython
+fi
+
+if ! $project_name/$venv/bin/python -c 'import pygame' 2>/dev/null >/dev/null; then
+    echo download the most recent development version of pygame
+    hg clone https://bitbucket.org/pygame/pygame
+    pushd pygame
+    echo in Fedora porttime is included in portmidi, a patch is needed.
+    patch -p1 -i ../pygame-porttime.patch
+    echo install pygame
+    yes| ../$project_name/$venv/bin/python setup.py install
+    popd
+fi
+
+if ! $project_name/$venv/bin/python -c 'import kivy' 2>/dev/null >/dev/null; then
+    echo install kivy
+    $project_name/$venv/bin/pip install git+https://github.com/kivy/kivy.git
+fi
+
+echo activate the virtual environment
+source $project_name/$venv/bin/activate
+
+echo create a git repository
+cd $project_name
+git init
+git config user.email juan.perez@ejemplo.com
+git config user.name 'Juan Pérez'
+echo "venv*" >> .gitignore
+echo "*.pyc" >> .gitignore
+git add .gitignore
+git commit -m "Create .gitignore file. Ignores compiled python files and venv."
