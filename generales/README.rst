@@ -2,6 +2,23 @@
 Generales
 =========
 
+install-kivy
+============
+
+Instala Kivy en un ambiente virtual.  Realiza
+los siguientes pasos:
+
+- Crea una carpeta de proyecto
+- Crea el ambiente virtual con Python 3.3
+- Emula la opción --always-copy de virtualenv
+  que no funciona, requerida para instalar
+  pygame.
+- Descarga e instala Cython, pygame y Kivy.
+- Inicia el repositorio de git en la carpeta
+  del proyecto.
+
+Ha sido probado en Fedora 20.
+
 tbg
 ===
 
