@@ -2,7 +2,7 @@
 
 project_name=project
 venv=venv
-pyver=3.3
+pyver=$(2>&1 python3 -V|cut -d' ' -f2 |cut -d. -f1-2)
 
 if [ ! -e $project_name ]; then
     echo create folder $project_name
