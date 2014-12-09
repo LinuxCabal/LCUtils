@@ -2,7 +2,7 @@
 
 project_name=project
 venv=venv
-pyver=3.3
+pyver=$(2>&1 python3 -V|cut -d' ' -f2 |cut -d. -f1-2)
 
 if [ ! -e $project_name ]; then
     echo create folder $project_name
@@ -13,9 +13,9 @@ if [ ! -e $project_name/$venv ]; then
     echo create virtual environment $venv
     virtualenv -p python$pyver $project_name/$venv
     echo simulate option --copy-all required for pygame install
-    rm -vf $project_name/$venv/include/python${pyver}m
-    mkdir -v $project_name/$venv/include/python${pyver}m
-    cp -r /usr/include/python${pyver}m/* $project_name/$venv/include/python${pyver}m
+    rm -vf $project_name/$venv/include/python${pyver}
+    mkdir -v $project_name/$venv/include/python${pyver}
+    cp -r /usr/include/python${pyver}/* $project_name/$venv/include/python${pyver}
 fi
 
 if ! $project_name/$venv/bin/python -c 'import cython' 2>/dev/null >/dev/null; then
@@ -42,12 +42,14 @@ fi
 echo activate the virtual environment
 source $project_name/$venv/bin/activate
 
-echo create a git repository
 cd $project_name
-git init
-git config user.email juan.perez@ejemplo.com
-git config user.name 'Juan Pérez'
-echo "venv*" >> .gitignore
-echo "*.pyc" >> .gitignore
-git add .gitignore
-git commit -m "Create .gitignore file. Ignores compiled python files and venv."
+if ! git status >/dev/null 2>&1; then
+    echo create a git repository
+    git init
+    git config user.email juan.perez@ejemplo.com
+    git config user.name 'Juan Pérez'
+    echo "venv*" >> .gitignore
+    echo "*.pyc" >> .gitignore
+    git add .gitignore
+    git commit -m "Create .gitignore file. Ignores compiled python files and venv."
+fi
