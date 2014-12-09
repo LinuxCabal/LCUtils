@@ -13,9 +13,9 @@ if [ ! -e $project_name/$venv ]; then
     echo create virtual environment $venv
     virtualenv -p python$pyver $project_name/$venv
     echo simulate option --copy-all required for pygame install
-    rm -vf $project_name/$venv/include/python${pyver}m
-    mkdir -v $project_name/$venv/include/python${pyver}m
-    cp -r /usr/include/python${pyver}m/* $project_name/$venv/include/python${pyver}m
+    rm -vf $project_name/$venv/include/python${pyver}
+    mkdir -v $project_name/$venv/include/python${pyver}
+    cp -r /usr/include/python${pyver}/* $project_name/$venv/include/python${pyver}
 fi
 
 if ! $project_name/$venv/bin/python -c 'import cython' 2>/dev/null >/dev/null; then
