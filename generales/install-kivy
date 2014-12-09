@@ -42,12 +42,14 @@ fi
 echo activate the virtual environment
 source $project_name/$venv/bin/activate
 
-echo create a git repository
 cd $project_name
-git init
-git config user.email juan.perez@ejemplo.com
-git config user.name 'Juan Pérez'
-echo "venv*" >> .gitignore
-echo "*.pyc" >> .gitignore
-git add .gitignore
-git commit -m "Create .gitignore file. Ignores compiled python files and venv."
+if ! git status >/dev/null 2>&1; then
+    echo create a git repository
+    git init
+    git config user.email juan.perez@ejemplo.com
+    git config user.name 'Juan Pérez'
+    echo "venv*" >> .gitignore
+    echo "*.pyc" >> .gitignore
+    git add .gitignore
+    git commit -m "Create .gitignore file. Ignores compiled python files and venv."
+fi
