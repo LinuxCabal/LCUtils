@@ -13,7 +13,7 @@ framerate=10
 log_level='quiet'
 name=${1:-screencast}
 path=~/Videos/screencasts
-resolution='hd1080'
+resolution='1920x1080'
 
 
 # functions
@@ -52,7 +52,7 @@ record_screen() {
     echo "Recording screencast in ${path}/${date}-${name}.${format}; in ${resolution} @ ${framerate} FPS..."
     echo "Please, press 'q, <enter>' when done."
 
-    ffmpeg -loglevel ${log_level} -threads ${cpu_no} -f pulse -i default -f x11grab -framerate ${framerate} -s hd1080 -i $DISPLAY ~/Videos/screencasts/${date}-${name}.${format}
+    ffmpeg -loglevel ${log_level} -threads ${cpu_no} -f pulse -i default -f x11grab -framerate ${framerate} -s ${resolution} -i $DISPLAY ~/Videos/screencasts/${date}-${name}.${format}
 
     clean_up
 }
