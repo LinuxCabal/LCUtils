@@ -26,7 +26,7 @@ bootstrap() {
 
     # check if dir exists
     if [[ ! -d ${path}  ]]; then
-        mkdir -p -m 640 ${path};
+        mkdir -p -m 750 ${path};
     fi
 }
 
