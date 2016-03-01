@@ -22,7 +22,7 @@ Pre-requisitos
 Procedimiento
 -------------
 
-.. code::bash
+.. code:: bash
 
     # ir al directorio que contiene el script
     cd generalles/lc-parseventos
