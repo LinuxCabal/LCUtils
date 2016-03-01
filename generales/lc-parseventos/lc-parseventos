@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+
+require 'yaml'
+require 'json'
+require 'nokogiri'
+require 'open-uri'
+
+page = Nokogiri::HTML( open( 'http://linuxcabal.org/Eventos.php' ) )
+
+events = []
+page.css( 'tr' ).each { |tr|
+    event = []
+
+    tr.css( 'td' ).each { |td|
+        event <<  td.text.strip.gsub( /\s+/, " " ).to_s
+    }
+    
+    events << Hash[ [:weekday, :day, :date, :time, :description].zip( event ) ]
+}
+
+puts events.to_yaml
