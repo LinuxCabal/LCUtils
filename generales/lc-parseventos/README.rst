@@ -22,7 +22,7 @@ Procedimiento
 .. code:: bash
 
     # ir al directorio que contiene el script
-    cd generalles/lc-parseventos
+    cd generales/lc-parseventos
 
     # correr bundler
     bundle install
