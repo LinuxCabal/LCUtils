@@ -6,11 +6,11 @@
 # License: GPLv3
 
 # vars
-cpu_no=$(( 1 + $( lscpu -p | tail -n 1 | cut -d ',' -f 1 ) ))
+threads='auto'
 date=$( date +%Y%m%d-%H%M%S )
 format='webm'
 framerate=10
-log_level='quiet'
+log_level='verbose'
 name=${1:-screencast}
 path=~/Videos/screencasts
 resolution='1920x1080'
@@ -42,7 +42,7 @@ control_c() {
 }
 
 start_minicam() {
-    ffplay -threads ${cpu_no} -loglevel quiet -f v4l2 -framerate ${framerate} -i /dev/video0 -video_size 320x240 &
+    ffplay -mode realtime -threads ${threads} -loglevel ${log_level} -f v4l2 -framerate ${framerate} -i /dev/video0 -video_size 320x240 &
     video_pid=${!}
 }
 
@@ -52,7 +52,26 @@ record_screen() {
     echo "Recording screencast in ${path}/${date}-${name}.${format}; in ${resolution} @ ${framerate} FPS..."
     echo "Please, press 'q, <enter>' when done."
 
-    ffmpeg -loglevel ${log_level} -threads ${cpu_no} -f pulse -i default -f x11grab -framerate ${framerate} -s ${resolution} -i $DISPLAY ~/Videos/screencasts/${date}-${name}.${format}
+    ffmpeg \
+        -loglevel ${log_level} \
+        -threads ${threads} \
+        -f pulse \
+            -i default \
+        -f x11grab \
+            -s ${resolution} \
+            -i ${DISPLAY} \
+        -c:v libvpx \
+            -deadline good \
+            -cpu-used 4 \
+            -b:v 500k \
+            -qmin 10 \
+            -qmax 42 \
+            -maxrate 500k \
+            -bufsize 1000k \
+            -skip_threshold 50 \
+        -c:a libvorbis \
+            -b:a 128k \
+        ~/Videos/screencasts/${date}-${name}.${format}
 
     clean_up
 }
@@ -64,6 +83,6 @@ record_screen
 
 
 # trap ctrl+c if it happens
-trap control_c SIGINT 
+trap control_c SIGINT
 
 exit 0
