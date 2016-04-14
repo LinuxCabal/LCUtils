@@ -3,17 +3,19 @@
 # Description: This script generates screencasts with audio; in webM format.
 # Requirements: ffmpeg
 # Author: Renich Bon Ciric <renich@woralelandia.com>
-# License: GPLv3
+# License: GPLv3 or >
 
-# vars
+# config
 threads='auto'
 date=$( date +%Y%m%d-%H%M%S )
-format='webm'
+format='webm'                       # webm|mkv recommended
+audio_codec='libvorbis'             # libvorbis|libfaac|aac recommended
+audio_codec_options='-b:a 128k'
 framerate=10
-log_level='verbose'
+log_level='quiet'
 name=${1:-screencast}
 path=~/Videos/screencasts
-resolution='1920x1080'
+resolution='hd1080'                 # hd1080|hd720 recommended
 
 
 # functions
@@ -42,7 +44,15 @@ control_c() {
 }
 
 start_minicam() {
-    ffplay -mode realtime -threads ${threads} -loglevel ${log_level} -f v4l2 -framerate ${framerate} -i /dev/video0 -video_size 320x240 &
+    ffplay \
+        -mode realtime \
+        -threads ${threads} \
+        -loglevel ${log_level} \
+        -f v4l2 \
+        -framerate ${framerate} \
+        -i /dev/video0 \
+        -video_size 320x240 &
+
     video_pid=${!}
 }
 
@@ -53,6 +63,7 @@ record_screen() {
     echo "Please, press 'q, <enter>' when done."
 
     ffmpeg \
+        -strict -2 \
         -loglevel ${log_level} \
         -threads ${threads} \
         -f pulse \
@@ -69,8 +80,8 @@ record_screen() {
             -maxrate 500k \
             -bufsize 1000k \
             -skip_threshold 50 \
-        -c:a libvorbis \
-            -b:a 128k \
+        -c:a ${audio_codec} \
+            ${audio_codec_options} \
         ~/Videos/screencasts/${date}-${name}.${format}
 
     clean_up
