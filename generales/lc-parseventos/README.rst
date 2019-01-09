@@ -25,7 +25,7 @@ Procedimiento
     cd generales/lc-parseventos
 
     # correr bundler
-    bundle install
+    bundle install --path vendor/bundle
 
     # para probarlo, solo córrelo
-    ./lc-parseventos
+    bundle exec lc-parseventos
